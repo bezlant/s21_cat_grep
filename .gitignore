@@ -1,3 +1,9 @@
+# Mac
+.DS_Store
+
+# Configurations
+.clang*
+
 # Prerequisites
 *.d
 
@@ -13,8 +19,7 @@
 *.exp
 
 # Precompiled Headers
-*.gch
-*.pch
+*.gch *.pch
 
 # Libraries
 *.lib
