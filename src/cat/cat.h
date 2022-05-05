@@ -19,16 +19,17 @@ typedef struct flags {
     bool s;
     bool t;
     bool T;
+    int count;
 } flags;
 
 bool parse_flag(flags *f, const char *flags);
 bool check_args(const int count, char **strs);
 bool check_flags(const char *flags);
-void print_file(flags f, FILE *file);
-void handle_string(flags f, char *str, size_t len);
-void handle_b(flags f, char *str, size_t len);
+void print_file(flags f, FILE *file, int *cnt);
+void handle_string(flags f, char *str, size_t len, int *cnt);
+void handle_b(flags f, char *str, size_t len, int *cnt);
 void handle_s(flags f, char *str, size_t len);
-void handle_n(flags f, char *str, size_t len);
+void handle_n(flags f, char *str, size_t len, int *cnt);
 void handle_E(flags f, char *str, size_t len);
 void handle_T(flags f, const char *str, size_t len);
 void handle_t(flags f, const char *str, size_t len);

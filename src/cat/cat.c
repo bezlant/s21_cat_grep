@@ -54,11 +54,12 @@ int main(int argc, char **argv) {
         f.is_set = parse_flag(&f, argv[1]);
         for (int i = 1 + f.is_set; i < argc; i++) {
             FILE *file = fopen(argv[i], "r");
+            int cnt = 1;
             if (!file) {
                 printf("cat: %s: No such file or directory\n", argv[i]);
                 continue;
             } else {
-                print_file(f, file);
+                print_file(f, file, &cnt);
                 fclose(file);
             }
         }
@@ -112,14 +113,14 @@ bool parse_flag(flags *f, const char *str) {
     return ret;
 }
 
-void print_file(flags f, FILE *file) {
+void print_file(flags f, FILE *file, int *cnt) {
     char *line = NULL;
     size_t lencap = 0;
     ssize_t linelen;
 
     while ((linelen = getline(&line, &lencap, file)) > 0) {
         if (f.is_set)
-            handle_string(f, line, linelen);
+            handle_string(f, line, linelen, cnt);
         else
             fwrite(line, linelen, 1, stdout);
     }
@@ -127,13 +128,13 @@ void print_file(flags f, FILE *file) {
     free(line);
 }
 
-void handle_string(flags f, char *str, size_t len) {
+void handle_string(flags f, char *str, size_t len, int *cnt) {
     if (f.b)
-        handle_b(f, str, len);
+        handle_b(f, str, len, cnt);
     else if (f.s)
         handle_s(f, str, len);
     else if (f.n)
-        handle_n(f, str, len);
+        handle_n(f, str, len, cnt);
     else if (f.e)
         handle_e(f, str, len);
     else if (f.E)
@@ -194,14 +195,13 @@ void num_to_str(int val, char *num) {
     memmove(num, num + idx + 1, SIZE - idx);
 }
 
-void handle_b(flags f, char *str, size_t len) {
-    static int cnt = 1;
+void handle_b(flags f, char *str, size_t len, int *cnt) {
     char num[SIZE] = {'\0'};
-    num_to_str(cnt, num);
+    num_to_str(*cnt, num);
     if (*str != '\n') {
         printf("     %s\t", num);
         fwrite(str, len, 1, stdout);
-        cnt++;
+        (*cnt)++;
     } else {
         fwrite(str, len, 1, stdout);
     }
@@ -215,11 +215,10 @@ void handle_s(flags f, char *str, size_t len) {
         prev = 1;
     }
 }
-void handle_n(flags f, char *str, size_t len) {
-    static int cnt = 1;
+void handle_n(flags f, char *str, size_t len, int *cnt) {
     char num[SIZE] = {'\0'};
-    num_to_str(cnt, num);
+    num_to_str(*cnt, num);
     printf("     %s\t", num);
     fwrite(str, len, 1, stdout);
-    cnt++;
+    (*cnt)++;
 }

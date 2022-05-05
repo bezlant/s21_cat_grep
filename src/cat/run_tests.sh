@@ -34,8 +34,8 @@ fi
 
 ((i++))
 
-cat -n test2.txt > a
-gcc cat.c && ./a.out -n test2.txt > b
+cat -n test2.txt test.txt > a
+gcc cat.c && ./a.out -n test2.txt test.txt > b
 result=$(diff a b)
 
 if [ $? -eq 0 ]; then
