@@ -8,17 +8,24 @@ int main(int argc, char **argv) {
         for (int i = optind; i < argc; i++) {
             FILE *file = fopen(argv[i], "r");
             if (!file) {
-                printf("grep: %s: No such file or directory\n", argv[i]);
-                continue;
+                if (!f.s && ((!f.e && !f.f) || i != 2))
+                    printf("grep: %s: No such file or directory\n", argv[i]);
             } else {
-                grep(f, file);
+                grep(f, file, argv[i], i);
                 fclose(file);
             }
         }
     }
     return err;
 }
-void grep(flags f, FILE *file) {}
+
+void grep(flags f, FILE *file, char *filename, int idx) {
+    static char reg_buff[BUFF_SIZE] = {'\0'};
+    if (f.e && idx == 2) {
+        strcpy(reg_buff, filename);
+        handle_regexp();
+    }
+}
 
 int get_flags(flags *f, int *opt, int argc, char **argv) {
     int ret = 0;
