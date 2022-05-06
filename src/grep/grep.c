@@ -16,7 +16,6 @@ int main(int argc, char **argv) {
                 grep(f, argv[i], pattern, argc - optind);
     } else
         print_usage();
-
     return err;
 }
 
@@ -30,42 +29,93 @@ void grep(const struct flags f, const char *filename, const char *pattern,
         int line_num = 0;
         while (getline(&line, &linecap, file) > 0) {
             line_num++;
-            if (match_pattern(f, line, pattern)) {
+            char *matches[100];
+            if (f.o && !f.v && !f.c && !f.l) {
+                match_pattern(f, line, pattern, matches);
+                handle_header(f, filename, file_count);
+                handle_number(f, line_num);
+                for (int i = 0; matches[i]; i++) {
+                    printf("%s\n", matches[i]);
+                    free(matches[i]);
+                }
+                continue;
+            }
+            // everything without -o
+            if (match_pattern(f, line, pattern, matches)) {
                 matched_lines++;
                 if (!f.c && !f.l) {
-                    if (!f.h && file_count > 1)
-                        f.n ? printf("%s:%d:%s", filename, line_num, line)
-                            : printf("%s:%s", filename, line);
-                    else
-                        f.n ? printf("%d:%s", line_num, line)
-                            : printf("%s", line);
+                    handle_header(f, filename, file_count);
+                    handle_number(f, line_num);
+                    printf("%s", line);
                 }
             }
         }
-        if (f.c)
-            (file_count > 1 && !f.h)
-                ? printf("%s:%d\n", filename, matched_lines)
-                : printf("%d\n", matched_lines);
-        if (f.l)
-            printf("%s\n", filename);
-
+        handle_header_cl(f, filename, file_count);
+        handle_count(f, matched_lines);
+        handle_list_files(f, filename, matched_lines);
         fclose(file);
-    } else if (!f.s) {
+    }
+
+    else if (!f.s) {
         print_no_file(filename);
     }
 }
 
-bool match_pattern(const struct flags f, const char *str, const char *pattern) {
+bool match_pattern(const struct flags f, const char *str, const char *pattern,
+                   char *matches[]) {
     bool ret = false;
+
     regex_t regex;
     if (f.i)
         regcomp(&regex, pattern, REG_ICASE);
     else
         regcomp(&regex, pattern, REG_EXTENDED);
-    ret = regexec(&regex, str, 0, NULL, 0) == 0;
+    if (f.o) {
+        regmatch_t match;
+        size_t offset = 0;
+        size_t str_len = strlen(str);
+        int idx = 0;
+        for (; (ret = regexec(&regex, str + offset, 1, &match, 0)) == 0;
+             idx++) {
+            int len = match.rm_eo - match.rm_so;
+            matches[idx] = malloc(len + 1);
+            memcpy(matches[idx], str + match.rm_so + offset, len);
+            matches[idx][len] = '\0';
+            offset += match.rm_eo + 1;
+            if (offset > str_len)
+                break;
+        }
+        matches[idx] = NULL;
+    } else {
+        ret = regexec(&regex, str, 0, NULL, 0) == 0;
+    }
 
     regfree(&regex);
     return f.v ? !ret : ret;
+}
+void handle_header_cl(const struct flags f, const char *filename,
+                      const int file_count) {
+    if (f.l && f.c && !f.h && file_count > 1)
+        printf("%s:", filename);
+}
+void handle_number(const struct flags f, const int line_num) {
+    if (f.n)
+        printf("%d:", line_num);
+}
+void handle_list_files(const struct flags f, const char *filename,
+                       const int matched_lines) {
+    if (f.l && matched_lines)
+        printf("%s\n", filename);
+}
+void handle_count(const struct flags f, const int matched_lines) {
+    if (f.c) {
+        printf("%d\n", f.l ? matched_lines > 0 : matched_lines);
+    }
+}
+void handle_header(const struct flags f, const char *filename,
+                   const int file_count) {
+    if (!f.h && file_count > 1)
+        printf("%s:", filename);
 }
 
 bool get_pattern(const char *argv, const struct flags f, char *ret) {
@@ -79,6 +129,7 @@ bool get_pattern(const char *argv, const struct flags f, char *ret) {
             size_t linecap = 0;
             getline(&pat, &linecap, file);
             strcpy(ret, pat);
+            ret[strcspn(ret, "\r\n")] = 0;
             fclose(file);
             free(pat);
         }
@@ -119,6 +170,8 @@ int get_flags(struct flags *f, int *opt, const int argc, char **argv) {
             f->s = true;
             break;
         case 'f':
+            // ![attention] NOT SURE if NEEDED
+            f->i = true;
             f->f = true;
             break;
         case 'o':
