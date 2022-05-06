@@ -10,7 +10,7 @@
 
 #define BUFF_SIZE 4096
 
-typedef struct {
+struct flags {
     bool e;
     bool i;
     bool v;
@@ -21,27 +21,16 @@ typedef struct {
     bool s;
     bool f;
     bool o;
-} flags;
+};
 
-bool match_pattern(flags f, char *str, char *pattern);
-bool get_pattern(char *argv, flags f, char *ret);
-int get_flags(flags *f, int *opt, int argc, char **argv);
-void grep(flags f, char *filename, char *pattern);
-void handle_regexp(flags f, FILE *file, char *filename, char *reg_buff);
+bool match_pattern(struct flags f, const char *str, const char *pattern);
+bool get_pattern(const char *argv, const struct flags f, char *ret);
+int get_flags(struct flags *f, int *opt, int argc, char **argv);
+void grep(const struct flags f, const char *filename, const char *pattern,
+          const int file_count);
 void print_usage();
-void print_no_file(char *filename);
+void print_no_file(const char *filename);
 
 #endif  // SRC_GREP_H_
 
-// FILE *file = fopen(argv[i], "r");
-// if (!file) {
-//     if (!f.s && (!f.e || i != 2))
-//         print_no_file(argv[i]);
-//     if (f.f && i == 2) {
-//         print_no_file(argv[i]);
-//         break;
-//     }
-// } else {
-//     grep(f, file, pattern);
-//     fclose(file);
-// }
+// DONE [-e-i-v-s-f]
