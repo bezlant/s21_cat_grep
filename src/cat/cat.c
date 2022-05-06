@@ -51,8 +51,8 @@ int main(int argc, char **argv) {
     int ret = 0;
     if (check_args(argc, argv)) {
         flags f = {0};
-        f.is_set = parse_flag(&f, argv[1]);
-        for (int i = 1 + f.is_set; i < argc; i++) {
+        int is_set = parse_flag(&f, argv[1]);
+        for (int i = 1 + is_set; i < argc; i++) {
             FILE *file = fopen(argv[i], "r");
             int cnt = 1;
             if (!file) {
@@ -117,22 +117,19 @@ void print_file(flags f, FILE *file, int *cnt) {
     char *line = NULL;
     size_t lencap = 0;
     ssize_t linelen;
+    int prev = 0;
+    while ((linelen = getline(&line, &lencap, file)) > 0)
+        handle_string(f, line, linelen, cnt, &prev);
 
-    while ((linelen = getline(&line, &lencap, file)) > 0) {
-        if (f.is_set)
-            handle_string(f, line, linelen, cnt);
-        else
-            fwrite(line, linelen, 1, stdout);
-    }
     // must free getline doest malloc
     free(line);
 }
 
-void handle_string(flags f, char *str, size_t len, int *cnt) {
+void handle_string(flags f, char *str, size_t len, int *cnt, int *prev) {
     if (f.b)
         handle_b(f, str, len, cnt);
     else if (f.s)
-        handle_s(f, str, len);
+        handle_s(f, str, len, prev);
     else if (f.n)
         handle_n(f, str, len, cnt);
     else if (f.e)
@@ -206,13 +203,14 @@ void handle_b(flags f, char *str, size_t len, int *cnt) {
         fwrite(str, len, 1, stdout);
     }
 }
-void handle_s(flags f, char *str, size_t len) {
-    static int prev = 0;
-    if (*str != '\n' || !prev) {
-        fwrite(str, len, 1, stdout);
-        prev = 0;
+void handle_s(flags f, char *str, size_t len, int *prev) {
+    if (*str == '\n') {
+        (*prev)++;
+        if (*prev == 1)
+            fwrite(str, len, 1, stdout);
     } else {
-        prev = 1;
+        fwrite(str, len, 1, stdout);
+        *prev = 0;
     }
 }
 void handle_n(flags f, char *str, size_t len, int *cnt) {

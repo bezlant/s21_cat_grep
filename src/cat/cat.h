@@ -11,7 +11,6 @@
 enum fl { b, gnu_b, e, gnu_e, n, gnu_n, s, gnu_s, t, gnu_t };
 
 typedef struct flags {
-    bool is_set;
     bool b;
     bool e;
     bool E;
@@ -26,9 +25,9 @@ bool parse_flag(flags *f, const char *flags);
 bool check_args(const int count, char **strs);
 bool check_flags(const char *flags);
 void print_file(flags f, FILE *file, int *cnt);
-void handle_string(flags f, char *str, size_t len, int *cnt);
+void handle_string(flags f, char *str, size_t len, int *cnt, int *prev);
 void handle_b(flags f, char *str, size_t len, int *cnt);
-void handle_s(flags f, char *str, size_t len);
+void handle_s(flags f, char *str, size_t len, int *prev);
 void handle_n(flags f, char *str, size_t len, int *cnt);
 void handle_E(flags f, char *str, size_t len);
 void handle_T(flags f, const char *str, size_t len);
