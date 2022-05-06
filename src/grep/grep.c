@@ -27,26 +27,23 @@ void grep(const struct flags f, const char *filename, const char *pattern,
         size_t linecap = 0;
         int matched_lines = 0;
         int line_num = 0;
+
         while (getline(&line, &linecap, file) > 0) {
             line_num++;
             char *matches[100];
-            if (f.o && !f.v && !f.c && !f.l) {
-                match_pattern(f, line, pattern, matches);
-                handle_header(f, filename, file_count);
-                handle_number(f, line_num);
-                for (int i = 0; matches[i]; i++) {
-                    printf("%s\n", matches[i]);
-                    free(matches[i]);
-                }
-                continue;
-            }
             // everything without -o
             if (match_pattern(f, line, pattern, matches)) {
                 matched_lines++;
                 if (!f.c && !f.l) {
                     handle_header(f, filename, file_count);
                     handle_number(f, line_num);
-                    printf("%s", line);
+                    if (f.o)
+                        for (int i = 0; matches[i]; i++) {
+                            printf("%s\n", matches[i]);
+                            free(matches[i]);
+                        }
+                    else
+                        printf("%s", line);
                 }
             }
         }
@@ -63,35 +60,29 @@ void grep(const struct flags f, const char *filename, const char *pattern,
 
 bool match_pattern(const struct flags f, const char *str, const char *pattern,
                    char *matches[]) {
-    bool ret = false;
-
     regex_t regex;
     if (f.i)
         regcomp(&regex, pattern, REG_ICASE);
     else
         regcomp(&regex, pattern, REG_EXTENDED);
-    if (f.o) {
-        regmatch_t match;
-        size_t offset = 0;
-        size_t str_len = strlen(str);
-        int idx = 0;
-        for (; (ret = regexec(&regex, str + offset, 1, &match, 0)) == 0;
-             idx++) {
-            int len = match.rm_eo - match.rm_so;
-            matches[idx] = malloc(len + 1);
-            memcpy(matches[idx], str + match.rm_so + offset, len);
-            matches[idx][len] = '\0';
-            offset += match.rm_eo + 1;
-            if (offset > str_len)
-                break;
-        }
-        matches[idx] = NULL;
-    } else {
-        ret = regexec(&regex, str, 0, NULL, 0) == 0;
+    regmatch_t match;
+    size_t offset = 0;
+    size_t str_len = strlen(str);
+    int idx = 0;
+    for (bool ret; (ret = regexec(&regex, str + offset, 1, &match, 0)) == 0;
+         idx++) {
+        int len = match.rm_eo - match.rm_so;
+        matches[idx] = malloc(len + 1);
+        memcpy(matches[idx], str + match.rm_so + offset, len);
+        matches[idx][len] = '\0';
+        offset += match.rm_eo + 1;
+        if (offset > str_len)
+            break;
     }
+    matches[idx] = NULL;
 
     regfree(&regex);
-    return f.v ? !ret : ret;
+    return f.v ? !idx : idx;
 }
 void handle_header_cl(const struct flags f, const char *filename,
                       const int file_count) {

@@ -184,5 +184,65 @@ else
     printf "$result\n"
 fi
 
+((i++))
+
+# TEST 13
+FLAGS='-o'
+grep $FLAGS $PAT $TESTFILE > a
+gcc grep.c && ./a.out $FLAGS $PAT $TESTFILE > b
+result=$(diff a b)
+
+if [ $? -eq 0 ]; then
+    printf " TEST #$i ${GREEN}PASSED${NC}\n"
+else
+    printf " TEST #$i ${RED}FAILED${NC}\n"
+    printf "$result\n"
+fi
+
+((i++))
+
+# TEST 14
+FLAGS='-on'
+grep $FLAGS $PAT $TESTFILE > a
+gcc grep.c && ./a.out $FLAGS $PAT $TESTFILE > b
+result=$(diff a b)
+
+if [ $? -eq 0 ]; then
+    printf " TEST #$i ${GREEN}PASSED${NC}\n"
+else
+    printf " TEST #$i ${RED}FAILED${NC}\n"
+    printf "$result\n"
+fi
+
+((i++))
+
+# TEST 15
+FLAGS='-onf'
+grep $FLAGS $PATFILE $TESTFILE > a
+gcc grep.c && ./a.out $FLAGS $PATFILE $TESTFILE > b
+result=$(diff a b)
+
+if [ $? -eq 0 ]; then
+    printf " TEST #$i ${GREEN}PASSED${NC}\n"
+else
+    printf " TEST #$i ${RED}FAILED${NC}\n"
+    printf "$result\n"
+fi
+
+((i++))
+
+# TEST 16
+FLAGS='-lco'
+grep $FLAGS $PAT $TESTFILE > a
+gcc grep.c && ./a.out $FLAGS $PAT $TESTFILE > b
+result=$(diff a b)
+
+if [ $? -eq 0 ]; then
+    printf " TEST #$i ${GREEN}PASSED${NC}\n"
+else
+    printf " TEST #$i ${RED}FAILED${NC}\n"
+    printf "$result\n"
+fi
+
 
 rm a.out a b
