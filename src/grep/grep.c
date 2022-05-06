@@ -86,7 +86,7 @@ bool match_pattern(const struct flags f, const char *str, const char *pattern,
 }
 void handle_header_cl(const struct flags f, const char *filename,
                       const int file_count) {
-    if (f.l && f.c && !f.h && file_count > 1)
+    if (f.c && !f.h && file_count > 1)
         printf("%s:", filename);
 }
 void handle_number(const struct flags f, const int line_num) {
