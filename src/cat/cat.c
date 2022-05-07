@@ -196,7 +196,10 @@ void handle_b(flags f, char *str, size_t len, int *cnt) {
     char num[SIZE] = {'\0'};
     num_to_str(*cnt, num);
     if (*str != '\n') {
-        printf("     %s\t", num);
+        int sp = 6 - log10(*cnt) - 0.0005;
+        while (sp--)
+            putchar(' ');
+        printf("%s\t", num);
         fwrite(str, len, 1, stdout);
         (*cnt)++;
     } else {
@@ -216,7 +219,10 @@ void handle_s(flags f, char *str, size_t len, int *prev) {
 void handle_n(flags f, char *str, size_t len, int *cnt) {
     char num[SIZE] = {'\0'};
     num_to_str(*cnt, num);
-    printf("     %s\t", num);
+    int sp = 6 - log10(*cnt) - 0.0005;
+    while (sp--)
+        putchar(' ');
+    printf("%s\t", num);
     fwrite(str, len, 1, stdout);
     (*cnt)++;
 }

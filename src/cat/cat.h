@@ -1,6 +1,7 @@
 #ifndef SRC_CAT_H_
 #define SRC_CAT_H_
 
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
