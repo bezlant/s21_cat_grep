@@ -1,11 +1,12 @@
-#ifndef SRC_CAT_H_
-#define SRC_CAT_H_
+#ifndef SRC_s21_CAT_H_
+#define SRC_s21_CAT_H_
 
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 
 #define SIZE 256
 
@@ -27,13 +28,13 @@ bool check_args(const int count, char **strs);
 bool check_flags(const char *flags);
 void print_file(flags f, FILE *file, int *cnt);
 void handle_string(flags f, char *str, size_t len, int *cnt, int *prev);
-void handle_b(flags f, char *str, size_t len, int *cnt);
-void handle_s(flags f, char *str, size_t len, int *prev);
-void handle_n(flags f, char *str, size_t len, int *cnt);
-void handle_E(flags f, char *str, size_t len);
-void handle_T(flags f, const char *str, size_t len);
-void handle_t(flags f, const char *str, size_t len);
-void handle_e(flags f, const char *str, size_t len);
+void handle_b(char *str, size_t len, int *cnt);
+void handle_s(char *str, size_t len, int *prev);
+void handle_n(char *str, size_t len, int *cnt);
+void handle_E(char *str, size_t len);
+void handle_T(const char *str, size_t len);
+void handle_t(const char *str, size_t len);
+void handle_e(const char *str, size_t len);
 void num_to_str(int val, char *num);
 
-#endif  // SRC_CAT_H_
+#endif  // SRC_s21_CAT_H_

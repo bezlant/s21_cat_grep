@@ -1,4 +1,4 @@
-#include "cat.h"
+#include "s21_cat.h"
 
 static const char *const symb[255] = {
     [0] = "^@",      [1] = "^A",     [2] = "^B",     [3] = "^C",
@@ -127,24 +127,24 @@ void print_file(flags f, FILE *file, int *cnt) {
 
 void handle_string(flags f, char *str, size_t len, int *cnt, int *prev) {
     if (f.b)
-        handle_b(f, str, len, cnt);
+        handle_b(str, len, cnt);
     else if (f.s)
-        handle_s(f, str, len, prev);
+        handle_s(str, len, prev);
     else if (f.n)
-        handle_n(f, str, len, cnt);
+        handle_n(str, len, cnt);
     else if (f.e)
-        handle_e(f, str, len);
+        handle_e(str, len);
     else if (f.E)
-        handle_E(f, str, len);
+        handle_E(str, len);
     else if (f.T)
-        handle_T(f, str, len);
+        handle_T(str, len);
     else if (f.t)
-        handle_t(f, str, len);
+        handle_t(str, len);
     else
         fwrite(str, len, 1, stdout);
 }
-void handle_t(flags f, const char *str, size_t len) {
-    for (int i = 0; i < len; i++) {
+void handle_t(const char *str, size_t len) {
+    for (size_t i = 0; i < len; i++) {
         if (str[i] == '\t')
             printf("^I");
         else
@@ -152,8 +152,8 @@ void handle_t(flags f, const char *str, size_t len) {
     }
 }
 
-void handle_e(flags f, const char *str, size_t len) {
-    for (int i = 0; i < len; i++) {
+void handle_e(const char *str, size_t len) {
+    for (size_t i = 0; i < len; i++) {
         if (str[i] == '\n')
             printf("$\n");
         else if (str[i] == '\t')
@@ -163,8 +163,8 @@ void handle_e(flags f, const char *str, size_t len) {
     }
 }
 
-void handle_T(flags f, const char *str, size_t len) {
-    for (int i = 0; i < len; i++) {
+void handle_T(const char *str, size_t len) {
+    for (size_t i = 0; i < len; i++) {
         if (str[i] == '\t')
             printf("^I");
         else
@@ -172,7 +172,7 @@ void handle_T(flags f, const char *str, size_t len) {
     }
 }
 
-void handle_E(flags f, char *str, size_t len) {
+void handle_E(char *str, size_t len) {
     if (str[len - 1] == '\n') {
         char *tmp = malloc(len + 1);
         strcpy(tmp, str);
@@ -192,7 +192,7 @@ void num_to_str(int val, char *num) {
     memmove(num, num + idx + 1, SIZE - idx);
 }
 
-void handle_b(flags f, char *str, size_t len, int *cnt) {
+void handle_b(char *str, size_t len, int *cnt) {
     char num[SIZE] = {'\0'};
     num_to_str(*cnt, num);
     if (*str != '\n') {
@@ -206,7 +206,7 @@ void handle_b(flags f, char *str, size_t len, int *cnt) {
         fwrite(str, len, 1, stdout);
     }
 }
-void handle_s(flags f, char *str, size_t len, int *prev) {
+void handle_s(char *str, size_t len, int *prev) {
     if (*str == '\n') {
         (*prev)++;
         if (*prev == 1)
@@ -216,7 +216,7 @@ void handle_s(flags f, char *str, size_t len, int *prev) {
         *prev = 0;
     }
 }
-void handle_n(flags f, char *str, size_t len, int *cnt) {
+void handle_n(char *str, size_t len, int *cnt) {
     char num[SIZE] = {'\0'};
     num_to_str(*cnt, num);
     int sp = 6 - log10(*cnt) - 0.0005;
