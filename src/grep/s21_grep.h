@@ -1,5 +1,5 @@
-#ifndef SRC_s21_GREP_H_
-#define SRC_s21_GREP_H_
+#ifndef SRC_GREP_S21_GREP_H_
+#define SRC_GREP_S21_GREP_H_
 
 #include <regex.h>
 #include <stdbool.h>
@@ -40,4 +40,4 @@ void handle_number(const struct flags f, const int line_num);
 void handle_header_cl(const struct flags f, const char *filename,
                       const int file_count);
 
-#endif  // SRC_s21_GREP_H_
+#endif  // SRC_GREP_S21_GREP_H_

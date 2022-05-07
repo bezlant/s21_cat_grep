@@ -10,7 +10,7 @@ printf "${GREEN}-----RUNNING TESTS-----${NC}\n"
 cat test.txt > a
 gcc $EXE && ./a.out test.txt > b
 result=$(diff a b)
-
+failed=0
 i=1
 
 # TEST 1
@@ -19,6 +19,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
 ((i++))
@@ -33,6 +34,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
 ((i++))
@@ -47,6 +49,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
 ((i++))
@@ -61,6 +64,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
 ((i++))
@@ -75,6 +79,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
 ((i++))
@@ -89,6 +94,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
 ((i++))
@@ -105,6 +111,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
 ((i++))
@@ -121,6 +128,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
 ((i++))
@@ -137,6 +145,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
 ((i++))
@@ -153,8 +162,9 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result"
+    ((failed++))
 fi
 
-((i++))
+printf " ${GREEN}-----DONE[$((i - failed))/$((i))]-----${NC}\n"
 
 rm a.out a b

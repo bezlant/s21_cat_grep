@@ -15,6 +15,7 @@ gcc $EXE && ./a.out $PAT $TESTFILE > b
 result=$(diff a b)
 
 i=1
+failed=0
 
 # TEST 1
 if [ $? -eq 0 ]; then
@@ -22,6 +23,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -36,6 +38,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -50,6 +53,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -64,6 +68,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -78,6 +83,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -93,6 +99,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -108,6 +115,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -123,6 +131,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -138,6 +147,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -153,6 +163,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -168,6 +179,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -183,6 +195,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -198,6 +211,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -213,6 +227,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -228,6 +243,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 ((i++))
@@ -243,6 +259,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
 
@@ -259,6 +276,7 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 ((i++))
 
@@ -273,6 +291,8 @@ if [ $? -eq 0 ]; then
 else
     printf " TEST #$i ${RED}FAILED${NC}\n"
     printf "$result\n"
+    ((failed++))
 fi
 
+printf " ${GREEN}-----DONE[$((i - failed))/$((i))]-----${NC}\n"
 rm a.out a b

@@ -1,5 +1,5 @@
-#ifndef SRC_s21_CAT_H_
-#define SRC_s21_CAT_H_
+#ifndef SRC_CAT_S21_CAT_H_
+#define SRC_CAT_S21_CAT_H_
 
 #include <math.h>
 #include <stdbool.h>
@@ -37,4 +37,4 @@ void handle_t(const char *str, size_t len);
 void handle_e(const char *str, size_t len);
 void num_to_str(int val, char *num);
 
-#endif  // SRC_s21_CAT_H_
+#endif  // SRC_CAT_S21_CAT_H_

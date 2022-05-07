@@ -9,13 +9,15 @@ int main(int argc, char **argv) {
         err = 1;
     if (!err) {
         char pattern[BUFF_SIZE] = {'\0'};
-        if (get_pattern(argv[optind], f, pattern) && !f.s)
+        if (get_pattern(argv[optind], f, pattern) && !f.s) {
             print_no_file(argv[optind]);
-        else
+        } else {
             for (int i = optind; i < argc; i++)
                 grep(f, argv[i], pattern, argc - optind);
-    } else
+        }
+    } else {
         print_usage();
+    }
     return err;
 }
 
@@ -37,13 +39,15 @@ void grep(const struct flags f, const char *filename, const char *pattern,
                 if (!f.c && !f.l) {
                     handle_header(f, filename, file_count);
                     handle_number(f, line_num);
-                    if (f.o)
+                    if (f.o) {
                         for (int i = 0; matches[i]; i++) {
                             printf("%s\n", matches[i]);
                             free(matches[i]);
                         }
-                    else
+
+                    } else {
                         printf("%s", line);
+                    }
                 }
             }
         }
@@ -51,9 +55,7 @@ void grep(const struct flags f, const char *filename, const char *pattern,
         handle_count(f, matched_lines);
         handle_list_files(f, filename, matched_lines);
         fclose(file);
-    }
-
-    else if (!f.s) {
+    } else if (!f.s) {
         print_no_file(filename);
     }
 }
