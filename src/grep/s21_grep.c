@@ -32,7 +32,7 @@ void grep(const struct flags f, const char *filename, const char *pattern,
 
         while (getline(&line, &linecap, file) > 0) {
             line_num++;
-            char *matches[100];
+            char *matches[BUFF_SIZE];
             // everything without -o
             if (match_pattern(f, line, pattern, matches)) {
                 matched_lines++;
@@ -164,7 +164,6 @@ int get_flags(struct flags *f, int *opt, const int argc, char **argv) {
             break;
         case 'f':
             // ![attention] NOT SURE if NEEDED
-            f->i = true;
             f->f = true;
             break;
         case 'o':
