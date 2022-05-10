@@ -54,7 +54,7 @@ void grep(const int *const flags, char *filename, char *patterns[],
                 if (!flags['c'] && !flags['l']) {
                     handle_header(flags, filename, file_count);
                     handle_number(flags, line_num);
-                    if (flags['o']) {
+                    if (flags['o'] && !flags['v']) {
                         for (int j = 0; matches[j]; j++) {
                             printf("%s\n", matches[j]);
                             free(matches[j]);
