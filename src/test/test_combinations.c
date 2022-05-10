@@ -38,7 +38,7 @@ END_TEST
 
 START_TEST(test_combinations_2) {
     char f_file[] = " char ";
-    char e_pattern[] = " void -e Lorem";  //-e Lorem ";
+    char e_pattern[] = " void -e Lorem";
     char search_files[] = " v2 void char text";
     char search_pattern[] = " void Lorem";
     char grep[512] = "grep --color=never ";
@@ -69,7 +69,7 @@ END_TEST
 
 START_TEST(test_combinations_3) {
     char f_file[] = " char ";
-    char e_pattern[] = " void";  //-e Lorem ";
+    char e_pattern[] = " void";
     char search_files[] = " v2 ";
     char search_pattern[] = " void Lorem";
     char grep[512] = "grep --color=never ";
@@ -100,7 +100,7 @@ END_TEST
 
 START_TEST(test_combinations_4) {
     char f_file[] = " char ";
-    char e_pattern[] = " char ";  //-e Lorem ";
+    char e_pattern[] = " char ";
     char search_files[] = " v2 void ";
     char search_pattern[] = " void Lorem";
     char grep[512] = "grep --color=never ";

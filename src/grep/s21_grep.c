@@ -243,13 +243,6 @@ void reset_e_f(int *flags) {
     flags['f'] = 0;
 }
 
-int get_patterns_count(char *patterns[]) {
-    int count = 0;
-    while (*patterns++)
-        count++;
-    return count;
-}
-
 int get_file_count(char *filenames[]) {
     int count = 0;
     while (*filenames++)

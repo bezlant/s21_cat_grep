@@ -32,7 +32,6 @@ void handle_list_files(const int *const flags, const char *filename,
                        const int matched_lines);
 // mini-helper
 int get_file_count(char *filenames[]);
-int get_patterns_count(char *patterns[]);
 void reset_e_f(int *flags);
 void free_malloc_array(char *array[]);
 
