@@ -69,6 +69,7 @@ void grep(const int *const flags, char *filename, char *patterns[],
         handle_header_cl(flags, filename, file_count);
         handle_count(flags, matched_lines);
         handle_list_files(flags, filename, matched_lines);
+        free(line);
         fclose(file);
     } else if (!flags['s']) {
         print_no_file_err(filename);
