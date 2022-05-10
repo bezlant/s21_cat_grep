@@ -1,4 +1,4 @@
-u app hello aboba1 aboba2
+u app hello aboba1 aboba2 aboba3
 not_an_aboba
 bye aboba
 

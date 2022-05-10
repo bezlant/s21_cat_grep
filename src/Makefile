@@ -31,6 +31,8 @@ $(GREP): $(OBJS_GREP) $(SRCS_GREP_H)
 $(GREP_PATH)/%.o: %.c $(SRCS_GREP_H)
 	$(CC) $(CFLAGS) $(ASAN) -c $< -o $@
 
+testus: test/test_combinations.c test/s21_grep_test.c
+	$(CC) test/test_combinations.c test/s21_grep_test.c -o testus -lcheck
 
 clean:
 	rm $(OBJS_CAT) $(CAT)
