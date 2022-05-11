@@ -215,6 +215,7 @@ int get_patterns_from_file(char *filename, char *patterns[], int *idx) {
             }
             (*idx)++;
         }
+        fclose(file);
         free(pat);
     }
     return err;
