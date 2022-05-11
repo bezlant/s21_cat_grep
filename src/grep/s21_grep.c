@@ -46,6 +46,7 @@ void grep(const int *const flags, char *filename, char *patterns[],
         size_t linecap = 0;
         int matched_lines = 0;
         int line_num = 0;
+        // ![fix empty line match all] \n = '.'
         while (getline(&line, &linecap, file) > 0) {
             line_num++;
             char *matches[BUFF_SIZE] = {NULL};
@@ -208,6 +209,10 @@ int get_patterns_from_file(char *filename, char *patterns[], int *idx) {
             }
             strcpy(patterns[*idx], pat);
             patterns[*idx][strcspn(patterns[*idx], "\r\n")] = '\0';
+            // handle empty string case (\n\0)
+            if (!strlen(patterns[*idx])) {
+                patterns[*idx][0] = '.';
+            }
             (*idx)++;
         }
         free(pat);
