@@ -1,6 +1,6 @@
 #include "s21_grep.h"
 
-int main(int argc, char **argv) {
+int main(const int argc, const char **const argv) {
     char *filenames[BUFF_SIZE] = {NULL};
     char *patterns[BUFF_SIZE] = {NULL};
     int flag['z'] = {0};
@@ -23,21 +23,16 @@ int main(int argc, char **argv) {
         int file_count = get_file_count(filenames) - is_no_ef;
         for (int i = is_no_ef; filenames[i] && err_code == SUCCESS; i++)
             grep(flag, filenames[i], patterns, file_count);
-#ifdef DEBUG
-        for (int i = 0; patterns[i]; i++)
-            printf("patterns[%d]=%s\n", i, patterns[i]);
-        for (int i = 0; filenames[i]; i++)
-            printf("filenames[%d]=%s\n", i, filenames[i]);
-#endif
-        free_malloc_array(filenames);
-        free_malloc_array(patterns);
     }
-
+    for (int i = 0; filenames[i]; i++)
+        free(filenames[i]);
+    for (int i = 0; patterns[i]; i++)
+        free(patterns[i]);
     print_err(err_code);
     return err_code;
 }
 
-void grep(const int *const flags, char *filename, char *patterns[],
+void grep(const int *const flags, const char *const filename, char *patterns[],
           const int file_count) {
     FILE *file = fopen(filename, "r");
     if (file) {
@@ -47,25 +42,25 @@ void grep(const int *const flags, char *filename, char *patterns[],
         int matched_lines = 0;
         int line_num = 0;
         // ![fix empty line match all] \n = '.'
+        char *matches[BUFF_SIZE] = {NULL};
         while (getline(&line, &linecap, file) > 0) {
             line_num++;
-            char *matches[BUFF_SIZE] = {NULL};
             if (match_patterns(flags, line, patterns, matches)) {
                 matched_lines++;
                 if (!flags['c'] && !flags['l']) {
                     handle_header(flags, filename, file_count);
                     handle_number(flags, line_num);
                     if (flags['o'] && !flags['v']) {
-                        for (int j = 0; matches[j]; j++) {
+                        for (int j = 0; matches[j]; j++)
                             printf("%s\n", matches[j]);
-                            free(matches[j]);
-                        }
                     } else {
                         line[strlen(line) - 1] == '\n' ? printf("%s", line)
                                                        : printf("%s\n", line);
                     }
                 }
             }
+            for (int j = 0; matches[j]; j++)
+                free(matches[j]);
         }
         handle_header_cl(flags, filename, file_count);
         handle_count(flags, matched_lines);
@@ -77,8 +72,8 @@ void grep(const int *const flags, char *filename, char *patterns[],
     }
 }
 
-bool match_patterns(const int *const flags, const char *str, char *patterns[],
-                    char *matches[]) {
+bool match_patterns(const int *const flags, const char *const str,
+                    char *patterns[], char *matches[]) {
     int idx = 0;
     for (int i = 0; patterns[i]; i++) {
         regex_t regex;
@@ -108,7 +103,7 @@ bool match_patterns(const int *const flags, const char *str, char *patterns[],
     return flags['v'] ? !idx : idx;
 }
 
-void handle_header(const int *const flags, const char *filename,
+void handle_header(const int *const flags, const char *const filename,
                    const int file_count) {
     if (file_count > 1 && !flags['c'] && !flags['h'])
         printf("%s:", filename);
@@ -119,7 +114,7 @@ void handle_number(const int *const flags, const int line_num) {
         printf("%d:", line_num);
 }
 
-void handle_header_cl(const int *const flags, const char *filename,
+void handle_header_cl(const int *const flags, const char *const filename,
                       const int file_count) {
     if (flags['c'] && !flags['h'] && file_count > 1)
         printf("%s:", filename);
@@ -131,14 +126,14 @@ void handle_count(const int *const flags, const int matched_lines) {
     }
 }
 
-void handle_list_files(const int *const flags, const char *filename,
+void handle_list_files(const int *const flags, const char *const filename,
                        const int matched_lines) {
     if (flags['l'] && matched_lines)
         printf("%s\n", filename);
 }
 
-int parse_args(int *flags, char **argv, char *filenames[], char *patterns[],
-               int argc) {
+int parse_args(int *const flags, const char **const argv, char *filenames[],
+               char *patterns[], const int argc) {
     int err = SUCCESS;
     int p = 0;
     int f = 0;
@@ -190,7 +185,8 @@ int parse_args(int *flags, char **argv, char *filenames[], char *patterns[],
     return err;
 }
 
-int get_patterns_from_file(char *filename, char *patterns[], int *idx) {
+int get_patterns_from_file(const char *const filename, char *patterns[],
+                           int *idx) {
     int err = SUCCESS;
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -221,7 +217,7 @@ int get_patterns_from_file(char *filename, char *patterns[], int *idx) {
     return err;
 }
 
-bool parse_flags(int *flags, const char *str) {
+bool parse_flags(int *const flags, const char *const str) {
     bool is_set = false;
     if (str[0] == '-') {
         for (int i = 1; str[i]; i++)
@@ -236,21 +232,16 @@ void print_usage_err() {
            "[file ...]\n");
 }
 
-void print_no_file_err(char *filename) {
+void print_no_file_err(const char *const filename) {
     printf("grep: %s: No such file or directory\n", filename);
 }
 
-void free_malloc_array(char *array[]) {
-    for (int i = 0; array[i]; i++)
-        free(array[i]);
-}
-
-void reset_e_f(int *flags) {
+void reset_e_f(int *const flags) {
     flags['e'] = 0;
     flags['f'] = 0;
 }
 
-int get_file_count(char *filenames[]) {
+int get_file_count(char *const filenames[]) {
     int count = 0;
     while (*filenames++)
         count++;
@@ -266,7 +257,7 @@ void print_malloc_err() {
     printf("grep: [MALLOC]: Can't allocate enough memory!:(\n");
 }
 
-bool check_flags(char *argv) {
+bool check_flags(const char *const argv) {
     int validation[BUFF_SIZE] = {0};
     validation['i'] = 1;
     validation['v'] = 1;

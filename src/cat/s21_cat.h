@@ -23,18 +23,19 @@ typedef struct flags {
     int count;
 } flags;
 
-bool parse_flag(flags *f, const char *flags);
-bool check_args(const int count, char **strs);
-bool check_flags(const char *flags);
-void print_file(flags f, FILE *file, int *cnt);
-void handle_string(flags f, char *str, size_t len, int *cnt, int *prev);
-void handle_b(char *str, size_t len, int *cnt);
-void handle_s(char *str, size_t len, int *prev);
-void handle_n(char *str, size_t len, int *cnt);
-void handle_E(char *str, size_t len);
-void handle_T(const char *str, size_t len);
-void handle_t(const char *str, size_t len);
-void handle_e(const char *str, size_t len);
-void num_to_str(int val, char *num);
+bool parse_flag(flags *const f, const char *const str);
+bool check_args(const int count, const char **const strs);
+bool check_flags(const char *const flags);
+void print_file(flags f, FILE *file, int *const cnt);
+void handle_string(flags f, const char *const str, const size_t len,
+                   int *const cnt, int *const prev);
+void handle_b(const char *const str, const size_t len, int *const cnt);
+void handle_s(const char *const str, const size_t len, int *const prev);
+void handle_n(const char *const str, const size_t len, int *const cnt);
+void handle_E(const char *const str, const size_t len);
+void handle_T(const char *const str, const size_t len);
+void handle_t(const char *const str, const size_t len);
+void handle_e(const char *const str, const size_t len);
+void num_to_str(int val, char *const num);
 
 #endif  // SRC_CAT_S21_CAT_H_

@@ -47,7 +47,7 @@ static const char pos_fl[][SIZE] = {
     "-b", "--number-nonblank", "-e", "-E", "-n",  "--number",
     "-s", "--squeeze-blank",   "-t", "-T", "NULL"};
 
-int main(int argc, char **argv) {
+int main(const int argc, const char **const argv) {
     int ret = 0;
     if (check_args(argc, argv)) {
         flags f = {0};
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     return ret;
 }
 
-bool check_args(const int count, char **strs) {
+bool check_args(const int count, const char **const strs) {
     bool ret = false;
     if (count == 2 && strs[1][0] != '-')
         ret = true;
@@ -80,8 +80,7 @@ bool check_args(const int count, char **strs) {
 
     return ret;
 }
-
-bool check_flags(const char *flags) {
+bool check_flags(const char *const flags) {
     bool ret = flags[0] == '-' ? false : true;
     if (flags[0] == '-') {
         for (int i = 0; strcmp("NULL", pos_fl[i]); i++) {
@@ -94,7 +93,7 @@ bool check_flags(const char *flags) {
     return ret;
 }
 
-bool parse_flag(flags *f, const char *str) {
+bool parse_flag(flags *const f, const char *const str) {
     bool ret = *str == '-' ? true : false;
     if (!strcmp(str, pos_fl[b]) || !strcmp(str, pos_fl[gnu_b]))
         f->b = true;
@@ -113,7 +112,7 @@ bool parse_flag(flags *f, const char *str) {
     return ret;
 }
 
-void print_file(flags f, FILE *file, int *cnt) {
+void print_file(flags f, FILE *file, int *const cnt) {
     char *line = NULL;
     size_t lencap = 0;
     ssize_t linelen;
@@ -125,7 +124,8 @@ void print_file(flags f, FILE *file, int *cnt) {
     free(line);
 }
 
-void handle_string(flags f, char *str, size_t len, int *cnt, int *prev) {
+void handle_string(flags f, const char *const str, const size_t len,
+                   int *const cnt, int *const prev) {
     if (f.b)
         handle_b(str, len, cnt);
     else if (f.s)
@@ -143,7 +143,7 @@ void handle_string(flags f, char *str, size_t len, int *cnt, int *prev) {
     else
         fwrite(str, len, 1, stdout);
 }
-void handle_t(const char *str, size_t len) {
+void handle_t(const char *const str, const size_t len) {
     for (size_t i = 0; i < len; i++) {
         if (str[i] == '\t')
             printf("^I");
@@ -152,7 +152,7 @@ void handle_t(const char *str, size_t len) {
     }
 }
 
-void handle_e(const char *str, size_t len) {
+void handle_e(const char *const str, const size_t len) {
     for (size_t i = 0; i < len; i++) {
         if (str[i] == '\n')
             printf("$\n");
@@ -163,7 +163,7 @@ void handle_e(const char *str, size_t len) {
     }
 }
 
-void handle_T(const char *str, size_t len) {
+void handle_T(const char *const str, const size_t len) {
     for (size_t i = 0; i < len; i++) {
         if (str[i] == '\t')
             printf("^I");
@@ -172,7 +172,7 @@ void handle_T(const char *str, size_t len) {
     }
 }
 
-void handle_E(char *str, size_t len) {
+void handle_E(const char *const str, const size_t len) {
     if (str[len - 1] == '\n') {
         char *tmp = malloc(len + 1);
         strcpy(tmp, str);
@@ -185,14 +185,14 @@ void handle_E(char *str, size_t len) {
     }
 }
 
-void num_to_str(int val, char *num) {
+void num_to_str(int val, char *const num) {
     int idx;
     for (idx = SIZE - 2; val; val /= 10, idx--)
         num[idx] = val % 10 + '0';
     memmove(num, num + idx + 1, SIZE - idx);
 }
 
-void handle_b(char *str, size_t len, int *cnt) {
+void handle_b(const char *const str, const size_t len, int *const cnt) {
     char num[SIZE] = {'\0'};
     num_to_str(*cnt, num);
     if (*str != '\n') {
@@ -206,7 +206,7 @@ void handle_b(char *str, size_t len, int *cnt) {
         fwrite(str, len, 1, stdout);
     }
 }
-void handle_s(char *str, size_t len, int *prev) {
+void handle_s(const char *const str, const size_t len, int *const prev) {
     if (*str == '\n') {
         (*prev)++;
         if (*prev == 1)
@@ -216,7 +216,7 @@ void handle_s(char *str, size_t len, int *prev) {
         *prev = 0;
     }
 }
-void handle_n(char *str, size_t len, int *cnt) {
+void handle_n(const char *const str, const size_t len, int *const cnt) {
     char num[SIZE] = {'\0'};
     num_to_str(*cnt, num);
     int sp = 6 - log10(*cnt) - 0.0005;
