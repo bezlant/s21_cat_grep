@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include "s21_grep.h"
 
 int main(const int argc, const char **const argv) {

@@ -1,5 +1,5 @@
 CC:=gcc
-CFLAGS:=-Wall -Werror -Wextra -std=c11
+CFLAGS:=-Wall -Werror -Wextra -std=c11 -pedantic
 
 CAT_PATH:=./cat
 GREP_PATH:=./grep
@@ -33,8 +33,8 @@ $(GREP_PATH)/%.o: %.c $(SRCS_GREP_H)
 
 testus: test/test_combinations.c test/s21_grep_test.c
 	$(CC) test/test_combinations.c test/s21_grep_test.c -o testus -lcheck
-	@cp testus ./test
-	@cp s21_grep ./test
+	@cp testus test
+	@cp s21_grep test
 
 clean:
 	rm $(OBJS_CAT) $(CAT)
